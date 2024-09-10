@@ -1,10 +1,10 @@
 import React from "react";
 
-function TodoItem() {
+function TodoItem({tarea, finish}) {
   return (
     <li>
-      <span>V</span>
-      <p>Llorar con la Lorona</p>
+      <span>{finish ? "v": "Ño"}</span>
+      <p>{tarea}</p>
       <span>X</span>
     </li>
   );
