@@ -26,6 +26,24 @@ function App() {
     return textTodos.includes(textSearch);
   })
 
+  const completeTodo = (text) => {
+    const newTodos = [...todos];
+    const todoIndex = newTodos.findIndex(
+      (todo) => todo.text === text
+    );
+    newTodos[todoIndex].completed = true;
+    setTodos(newTodos);
+  };
+
+  const deleteTodo = (text) => {
+    const newTodos = [...todos];
+    const todoIndex = newTodos.findIndex(
+      (todo) => todo.text === text
+    );
+    newTodos.splice(todoIndex, 1);
+    setTodos(newTodos);
+  };
+
   return (
     <>
       <TodoCounter completed={todosCompleted} total={allTodos} />
@@ -33,7 +51,12 @@ function App() {
 
       <TodoList>
         {todosSearched.map(todo => (
-          <TodoItem key={todo.text} tarea={todo.text} finish={todo.completed}/>
+          <TodoItem key={todo.text} 
+          tarea={todo.text} 
+          finish={todo.completed}
+          onComplete={() => completeTodo(todo.text)}
+          onDelete={() => deleteTodo(todo.text)}
+          />
           ))}
       </TodoList>
 
