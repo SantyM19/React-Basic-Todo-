@@ -6,20 +6,48 @@ import { CreateTodoButton } from "./CreateTodoButton";
 import React from 'react'
 import "./App.css";
 
-const todosDefault = [
-  {text : "trabajar", completed: true},
-  {text : "estudiar", completed: true},
-  {text : "dormir", completed: false},
-  {text : "comer", completed: true},
-]
+// const defaultTodos = [
+//   { text: 'Cortar cebolla', completed: true },
+//   { text: 'Tomar el Curso de Intro a React.js', completed: false },
+//   { text: 'Llorar con la Llorona', completed: false },
+//   { text: 'LALALALALA', completed: false },
+//   { text: 'Usar estados derivados', completed: true },
+// ];
+
+// localStorage.setItem('TODOS_V1', JSON.stringify(defaultTodos));
+// localStorage.removeItem('TODOS_V1');
+
+function useLocalStorage(itemName, initialValue) {
+  const localStorageItem = localStorage.getItem(itemName);
+
+  let parsedItem;
+  
+  if (!localStorageItem) {
+    localStorage.setItem(itemName, JSON.stringify(initialValue));
+    parsedItem = initialValue;
+  } else {
+    parsedItem = JSON.parse(localStorageItem);
+  }
+
+  const [item, setItem] = React.useState(parsedItem);
+
+  const saveItem = (newItem) => {
+    localStorage.setItem(itemName, JSON.stringify(newItem));
+    setItem(newItem);
+  };
+
+  return [item, saveItem];
+}
 
 function App() {
-  const [todos,setTodos] = React.useState(todosDefault)
-  const [searchValue,setSearchValue] = React.useState('');
+  const [todos, saveTodos] = useLocalStorage('TODOS_V1', []);
+  const [searchValue, setSearchValue] = React.useState('');
+
   console.log('Los usuarios buscan todos de ' + searchValue);
 
   const todosCompleted = todos.filter(todo => !!todo.completed).length;
   const allTodos = todos.length;
+
   const todosSearched = todos.filter((todo) => {
     const textTodos = todo.text.toLowerCase();
     const textSearch = searchValue.toLowerCase();
@@ -32,7 +60,7 @@ function App() {
       (todo) => todo.text === text
     );
     newTodos[todoIndex].completed = true;
-    setTodos(newTodos);
+    saveTodos(newTodos);
   };
 
   const deleteTodo = (text) => {
@@ -41,7 +69,7 @@ function App() {
       (todo) => todo.text === text
     );
     newTodos.splice(todoIndex, 1);
-    setTodos(newTodos);
+    saveTodos(newTodos);
   };
 
   return (
